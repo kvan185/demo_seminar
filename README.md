@@ -1,60 +1,53 @@
-# Mini Transformer cho Phân loại Cảm xúc Văn bản
+# Đồ án Cuối kỳ: Xây dựng Transformer cho bài toán phân loại cảm xúc
 
-Đây là bộ khung đồ án theo đúng cấu trúc yêu cầu trong đề.
+**Môn học:** Seminar chuyên đề
+**Sinh viên thực hiện:** [Họ và Tên của bạn]
+**MSSV:** [MSSV của bạn]
 
-## Cấu trúc thư mục
+## 1. Giới thiệu
+Đồ án này tập trung vào việc tự cài đặt thành phần cốt lõi của kiến trúc Transformer là **Self-Attention** từ đầu bằng PyTorch để giải quyết bài toán phân loại cảm xúc văn bản (Positive, Negative, Neutral).
 
-```text
-MSSV_HoTen_DoAn/
-├── data/
-│   └── sentiment_raw.csv
-├── data_utils.py
-├── model.py
-├── train.py
-├── visualize.py
-├── requirements.txt
-└── README.md
-```
+## 2. Cấu trúc dự án
+- `data/`: Chứa tập dữ liệu gốc `sentiment_raw.csv`.
+- `model.py`: Chứa kiến trúc Transformer Encoder (phần tự cài đặt: Scaled Dot-Product Attention và Feed Forward Network).
+- `train.py`: Script huấn luyện mô hình và thực hiện các thực nghiệm so sánh.
+- `visualize.py`: Script tạo heatmap trực quan hóa trọng số Attention.
+- `data_utils.py`: Chứa các hàm tiền xử lý dữ liệu và xây dựng từ điển.
+- `results/`: Chứa các model checkpoint (.pt), đồ thị learning curve và heatmap.
 
-## Chạy theo thứ tự
+## 3. Hướng dẫn sử dụng
 
-### 1) Cài thư viện
+### Cài đặt môi trường
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2) Tiền xử lý dữ liệu
+### Tiền xử lý dữ liệu
+Lệnh này sẽ xử lý dữ liệu thô, cắt câu tối đa 20 từ và tạo các file tensor:
 ```bash
-python data_utils.py --max_len 20 --show_stats
+python data_utils.py --max_len 20
 ```
 
-### 3) Điền TODO trong `model.py`, sau đó tự kiểm tra
+### Huấn luyện và Thực nghiệm
+Để chạy huấn luyện cho tất cả cấu hình (Transformer d=32, 64, 128 và Baseline MLP):
 ```bash
-python model.py
-```
-
-Kỳ vọng khi điền đúng:
-- scaled_dot_product_attention ... PASSED
-- SelfAttention ... PASSED
-- FeedForwardNetwork ... PASSED
-- TransformerEncoderBlock ... PASSED
-
-### 4) Huấn luyện
-```bash
-python train.py
 python train.py --run_all
-python train.py --d_model 128 --d_ff 256
 ```
 
-### 5) Visualize attention
+### Trực quan hóa Attention
+Để xem mô hình đang "chú ý" vào từ nào trong một câu cụ thể:
 ```bash
-python visualize.py
-python visualize.py --model results/model_Transformer_d128_ff256.pt
-python visualize.py --sentence "this film is absolutely terrible"
+python visualize.py --model results/model_Transformer_d64_ff128.pt --sentence "the movie is completely amazing"
 ```
 
-## Ghi chú cho sinh viên
-- Chỉ cần điền các phần `# TODO` trong `model.py`.
-- Không đổi tên hàm và tham số.
-- Dữ liệu đã có sẵn cột `split`.
-- Bộ dữ liệu này là dữ liệu mô phỏng cân bằng 3 lớp để phục vụ học Transformer.
+## 4. Kết quả thực nghiệm
+Dưới đây là tóm tắt kết quả so sánh giữa các mô hình:
+
+| Mô hình | Train Acc | Val Acc | Test Acc |
+| :--- | :---: | :---: | :---: |
+| **Transformer (d=64, ff=128)** | **99.05%** | **95.56%** | **97.78%** |
+| Transformer (d=128, ff=256) | 99.76% | 96.67% | 97.78% |
+| Transformer (d=32, ff=64) | 91.67% | 88.89% | 84.44% |
+| MLP Baseline (d=64) | 87.62% | 76.67% | 81.11% |
+
+**Nhận xét:** Kiến trúc Transformer cho thấy sự vượt trội rõ rệt so với Baseline MLP, đặc biệt là khả năng học các mối quan hệ ngữ cảnh thông qua cơ chế Self-Attention.
