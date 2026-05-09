@@ -1,8 +1,10 @@
 # Đồ án Cuối kỳ: Xây dựng Transformer cho bài toán phân loại cảm xúc
 
 **Môn học:** Seminar chuyên đề
-**Sinh viên thực hiện:** [Họ và Tên của bạn]
-**MSSV:** [MSSV của bạn]
+**Sinh viên 1:** Nguyễn Khánh Văn
+**MSSV1:** 3122410463
+**Sinh viên 2:** Nguyễn Thành Khang
+**MSSV2:** 3122410172
 
 ## 1. Giới thiệu
 Đồ án này tập trung vào việc tự cài đặt thành phần cốt lõi của kiến trúc Transformer là **Self-Attention** từ đầu bằng PyTorch để giải quyết bài toán phân loại cảm xúc văn bản (Positive, Negative, Neutral).

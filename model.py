@@ -122,6 +122,22 @@ class TransformerClassifier(nn.Module):
         return logits
 
 
+class MLPBaseline(nn.Module):
+    def __init__(self, vocab_size: int, d_model: int, num_classes: int):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.fc1 = nn.Linear(d_model, d_model)
+        self.fc2 = nn.Linear(d_model, num_classes)
+
+    def forward(self, input_ids):
+        # input_ids: (batch_size, seq_len)
+        # embedding: (batch_size, seq_len, d_model)
+        # mean over seq_len -> (batch_size, d_model)
+        x = self.embedding(input_ids).mean(dim=1)
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+
 # ============================================================
 # Unit tests de giang vien / sinh vien tu kiem tra model.py
 # ============================================================

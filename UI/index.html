@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="appTitle">Phân tích cảm xúc - Advanced Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="app-shell">
+        <div class="topbar">
+            <div class="app-brand">
+                <div>
+                    <p class="brand-label">AI DASHBOARD</p>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-nav">
+                    <button class="nav-item active" data-section="analysisSection" data-i18n="navAnalysis">Phân tích cảm
+                        xúc</button>
+                    <button class="nav-item" data-section="dataSection" data-i18n="navData">Quản lý dữ liệu</button>
+                </div>
+                <button id="langToggle" class="icon-btn" title="Switch Language">🇻🇳</button>
+                <button id="themeToggle" class="icon-btn" title="Chuyển chế độ sáng/tối">🌓</button>
+            </div>
+        </div>
+
+        <main class="content-area">
+            <div class="content-header">
+                <div>
+                    <h1 class="page-title">Sentiment Analysis Pro</h1>
+                </div>
+            </div>
+
+            <section id="analysisSection" class="page-section active-section">
+                <div class="dashboard-grid">
+                    <div class="panel-card analysis-panel">
+                        <div class="analysis-content">
+                            <div class="input-card">
+                                <div class="control-group">
+                                    <label class="input-label" data-i18n="selectModel">Chọn mô hình dự đoán:</label>
+                                    <select id="modelSelector" class="custom-select">
+                                        <option value="transformer_3">Transformer #3 (Advanced - 128d)</option>
+                                        <option value="transformer_2">Transformer #2 (Medium - 64d)</option>
+                                        <option value="transformer_1">Transformer #1 (Small - 32d)</option>
+                                        <option value="basic" data-i18n="modelBasic">MLP Basic (Baseline)</option>
+                                    </select>
+                                </div>
+
+                                <label for="textInput" class="input-label" data-i18n="inputLabel">Nhập câu cần phân
+                                    tích:</label>
+                                <textarea id="textInput" data-i18n-placeholder="inputPlaceholder"
+                                    placeholder="Ví dụ: I really love this product, it's amazing!"></textarea>
+                                <button id="analyzeBtn" class="analyze-btn">
+                                    <span class="btn-icon">🚀</span><span data-i18n="analyzeBtn">Phân tích ngay</span>
+                                </button>
+                            </div>
+
+                            <div id="resultSection" class="result-panel">
+                                <div class="result-card">
+                                    <div class="result-header">
+                                        <div>
+                                            <p class="result-label"><span data-i18n="resultFrom">Kết quả từ</span> <span
+                                                    id="modelUsedName">...</span></p>
+                                            <p class="confidence"><span data-i18n="confidenceLabel">Độ tin cậy:</span>
+                                                <strong id="confidenceValue">0%</strong></p>
+                                        </div>
+                                        <div id="sentimentBadge" class="sentiment-badge" data-i18n="noResult">CHƯA CÓ
+                                        </div>
+                                    </div>
+
+                                    <div id="confidenceWarning" class="confidence-warning">
+                                        ⚠️ <strong data-i18n="warningLabel">Lưu ý:</strong> <span
+                                            data-i18n="warningText">Độ tin cậy thấp. Kết quả có thể không chính
+                                            xác.</span>
+                                    </div>
+
+                                    <div class="attention-container" id="attentionContainer">
+                                        <div class="attention-header">
+                                            <p class="attention-title" data-i18n="attentionTitle">Self-Attention Map</p>
+                                            <p class="attention-subtitle" data-i18n="attentionSubtitle">Tương quan giữa
+                                                các từ trong câu</p>
+                                        </div>
+                                        <div id="heatmapWrapper"></div>
+                                    </div>
+
+                                    <div class="xai-container">
+                                        <p class="attention-title" data-i18n="xaiTitle">Giải thích mô hình (XAI)</p>
+                                        <p class="attention-subtitle" data-i18n="xaiSubtitle">Các từ khóa quan trọng
+                                            nhất đóng góp vào dự đoán:</p>
+                                        <div id="xaiList" class="xai-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="dataSection" class="page-section hidden">
+                <div class="panel-card data-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="page-title" data-i18n="navData">Quản lý dữ liệu</p>
+                            <p class="page-copy" data-i18n="dataSubtitle">Khám phá bộ dữ liệu và theo dõi lịch sử hoạt
+                                động.</p>
+                        </div>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="historyTab" data-i18n="tabHistory">Lịch sử</button>
+                        <button class="tab-btn" data-tab="csvTab" data-i18n="tabCsv">Dữ liệu CSV</button>
+                        <button class="tab-btn" data-tab="statsTab" data-i18n="tabStats">Thống kê & Word Cloud</button>
+                    </div>
+
+                    <div id="historyTab" class="tab-panel">
+                        <div class="table-card">
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="thStt">STT</th>
+                                        <th data-i18n="thText">Câu phân tích</th>
+                                        <th data-i18n="thModel">Mô hình</th>
+                                        <th data-i18n="thResult">Kết quả</th>
+                                        <th data-i18n="thTime">Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr>
+                                        <td colspan="5" class="empty-row" data-i18n="noHistory">Chưa có dữ liệu.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-actions">
+                            <button id="clearHistoryBtn" class="secondary-btn danger" data-i18n="clearHistory">Xóa lịch
+                                sử</button>
+                        </div>
+                    </div>
+
+                    <div id="csvTab" class="tab-panel hidden">
+                        <div class="csv-controls"
+                            style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem;">
+                            <div style="flex: 1;">
+                                <label class="input-label" data-i18n="filterByLabel">Lọc theo Label:</label>
+                                <select id="filterLabel" class="custom-select">
+                                    <option value="" data-i18n="allLabels">Tất cả Label</option>
+                                    <option value="positive">Positive</option>
+                                    <option value="neutral">Neutral</option>
+                                    <option value="negative">Negative</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <label class="input-label" data-i18n="filterBySplit">Lọc theo Split:</label>
+                                <select id="filterSplit" class="custom-select">
+                                    <option value="" data-i18n="allSplits">Tất cả Split</option>
+                                    <option value="train">Train</option>
+                                    <option value="val">Validation</option>
+                                    <option value="test">Test</option>
+                                </select>
+                            </div>
+                            <button id="loadCsvBtn" class="secondary-btn" style="height: 48px;"
+                                data-i18n="filterBtn">Lọc / Tải lại</button>
+                        </div>
+                        <p id="csvStatus" class="csv-status" style="margin-bottom: 0.5rem; font-weight: 600;"
+                            data-i18n="noCsvLoaded">Chưa tải dữ liệu.</p>
+                        <div class="table-card csv-card">
+                            <table class="history-table csv-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="thId">ID</th>
+                                        <th data-i18n="thSplit">Split</th>
+                                        <th data-i18n="thSentence">Câu văn</th>
+                                        <th data-i18n="thLabel">Label</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="csvTableBody">
+                                    <tr>
+                                        <td colspan="4" class="empty-row" data-i18n="csvLoadPrompt">Nhấn nút để tải dữ
+                                            liệu.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-actions csv-actions">
+                            <button id="csvPrevBtn" class="secondary-btn" disabled data-i18n="btnPrev">Trước</button>
+                            <button id="csvNextBtn" class="secondary-btn" disabled data-i18n="btnNext">Sau</button>
+                        </div>
+                    </div>
+
+                    <div id="statsTab" class="tab-panel hidden">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <p class="stat-name" data-i18n="statTotal">Tổng cộng</p>
+                                <p class="stat-value" id="statsTotal">0</p>
+                            </div>
+                            <div class="stat-card" style="border-bottom: 4px solid #10b981;">
+                                <p class="stat-name">Positive</p>
+                                <p class="stat-value" id="statsPositive">0</p>
+                            </div>
+                            <div class="stat-card" style="border-bottom: 4px solid #64748b;">
+                                <p class="stat-name">Neutral</p>
+                                <p class="stat-value" id="statsNeutral">0</p>
+                            </div>
+                            <div class="stat-card" style="border-bottom: 4px solid #ef4444;">
+                                <p class="stat-name">Negative</p>
+                                <p class="stat-value" id="statsNegative">0</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-card" style="margin-bottom: 2rem;">
+                            <p class="chart-label" data-i18n="chartLabel">Phân bổ cảm xúc (Lịch sử)</p>
+                            <canvas id="sentimentBarChart" width="800" height="300"></canvas>
+                        </div>
+
+                        <div class="section-header">
+                            <p class="section-label" data-i18n="wcHeader">Word Cloud (Top từ khóa)</p>
+                            <p class="hero-copy" data-i18n="wcSubtitle">Trực quan hóa các từ xuất hiện nhiều nhất trong
+                                bộ dữ liệu gốc.</p>
+                        </div>
+
+                        <div class="wordcloud-grid">
+                            <div class="wordcloud-card">
+                                <p class="chart-label" style="color: #10b981;">Positive Words</p>
+                                <canvas id="wcPositive" class="wordcloud-canvas"></canvas>
+                            </div>
+                            <div class="wordcloud-card">
+                                <p class="chart-label" style="color: #64748b;">Neutral Words</p>
+                                <canvas id="wcNeutral" class="wordcloud-canvas"></canvas>
+                            </div>
+                            <div class="wordcloud-card">
+                                <p class="chart-label" style="color: #ef4444;">Negative Words</p>
+                                <canvas id="wcNegative" class="wordcloud-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="loader" class="loading-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
